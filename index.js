@@ -18,7 +18,21 @@ function initGAuth () {
 function loginStatus () {
   const isSignedIn = auth.isSignedIn.get()
   if (isSignedIn) {
+
     user = auth.currentUser.get()
+
+    const idToken = user.getAuthResponse().id_token
+
+    const xhr = new XMLHttpRequest() //prépare une requête AJAX qu'on envoie vers Google.php qu'on a fait.
+    xhr.onreadystatechange = function(){
+      if (this.readyState===4) {
+        console.log(this.response)
+      }
+    }
+    xhr.open('POST', 'google.php', true)
+    xhr.setRequestHeader('Content-Type', "application/x-www-form-urlencoded") // type d'envoi = json
+    xhr.send(`id_token=${idToken}`)
+
     displayUser.style.display = 'block'
     document.getElementById('name').
     textContent = user.getBasicProfile().getName()
